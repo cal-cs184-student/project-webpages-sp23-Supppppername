@@ -1,7 +1,95 @@
+
+
+
 <html>
 	<head>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		Project 4 here
+		<h1>Final Project: Iridescent effects simulation
+		</h1>
+		<h3>Team Members:</h3>
+		<h5>Alana Li 3036912864</h5>
+		<h5>Jianzhong He 3036960615</h5>
+		<h5>Jie Chen 3036845283</h5>
+		<h5>Beatriz Muniz de Castro e Silva 3038745686</h5>
+
+		<h2>Overview</h2>
+		<p>
+			In this project, we are going to implement the effects of iridescence due to the wave nature of light. When light rays get reflected from the surface,
+			they tend to interfere with each other because of different wavelengths, exhibiting many colorful patterns on the surface. We are going to approximate this real-life situation by keeping track of the azimuthal angles, wavelengths, and phases of the lgihts.
+			Furthermore, we would like to extend the effects of iridescence to more anisotropic BRDFs and other scenes we have implemented in previous projects.
+		</p>
+			<table style="width:100%">
+				<tr align="center">
+					<td>
+						<img src="images/img.png" align="middle" width="400px"/>
+						<figcaption>Iridescent effects on a CD in real life</figcaption>
+					</td>
+				</tr>
+			</table>
+
+
+
+		<h2>Problem Description</h2>
+		<p>Reflection models in project 3-1 and 3-2 ignored the wavelike effects of natural light. When we have surfaces with small-scale details such as CDs, these details will cause the reflected waves to interfere with one another.
+			This phenomenon is known as diffraction. Different azimuthal angels will affect the diffraction patterns. </p>
+		<p>
+			We will be implementing the anisotropic BSFR to simulate a "rough" surface to produce inference patterns base off
+			the azimuthal angles. Then we will be calculating the wavelength of the reflected lights and interference pattern.
+			Finally, we will use the fragment shader to convert wavelength to RGB color and display the final image.
+		</p>
+		<h2>Goals</h2>
+		<p>In general, there are two approaches. The first one is we can start with the pathtracer code from project 3-1 and 3-2 and
+		modify it to incorporate the anisotropic BRDF and extra terms(phases, wavelengths, etc) in the ray tracing process. Or we can also extend project 4 to
+			accommodate the new BRDF and ray equations. In the end, we will need to update the code to incorporate the microfacet  model we used in project 3. We will try both ways and see which works the best for us.
+		</p>
+
+		<p>Either way, We have set up the following goals for this project:</p>
+		<h4>1. Iridescent effects for a CD </h4>
+		<P>Analysis the light interactions with rough surfaces using optic physics. </P>
+		<P>Calculate the reflected rays with shaders or pathtracer from previous projects.</P>
+		<P>Map wavelengths into different colors and render.</P>
+		<p>Sum results we got previsouly with Ansotropic lighting to produce a better Iridescent effects.</p>
+		<P>The ideal result here is a live demo iridescent CD. User can drag the CD or enter a different azimuthal angle to get a different color on the effects.</P>
+		<h4>2. Iridescent effects for a soap bubble</h4>
+		<P>(We anticipate this to be the most difficult part of the project)</P>
+		<P>Unlike CDs, soap bubbles exhibit thin-film interference patterns, which occurs when
+			one or more very thin transparent coatings or films are placed on top of a material. The lights will reflects and refracts multiple times inside the films and interference with themselves in the process.
+		</P>
+		<P>
+			Multiple layers flim coating simulation can be computational expensive.We need to start off one-lay film coating shader and then extend it to multiple layers if possible.
+		</P>
+		<P>
+			Giving the phase, wavelength, and magnitude of the light, we need to derive an expression for complex reflectance
+			and transmission terms that properly track changes in phase, then replace the Fresnel term in the BRDF with the new expression.
+		</P>
+		<P>
+			Our main goal here, is also to have a live demo showing soap bubbles' iridescent effects with different refraction index and film thicknesses.
+			In addition, the coating film is fluid and therefore can freely move around the bubble surface. Flowing flim can cause a change in temporal thickness. A higher aim of this project is to address this effects.
+		<h4>3. Iridescent effects for project3 BRDFs</h4>
+		<P> In this part, we will be mainly making changes to the .dea files(dragons, spheres, etc) we used in project 3 to showcase how their diffraction patterns look like under different coating flims.</P>
+		<P> We might need to modified the BRDFs heavily to incorporate the code we wrote above.</P>
+		<P> The goal here is to iridescent effects for the BRDFs we used in project 3.</P>
+		<h4>4. Iridescent effects for more complicated objects(bufferflies, cars, etc)</h4>
+		<P> (If we are not exhausted when we get here) We will be exploring many complicated objects(irregular shapes, more triangles, or complex ambient lighting)  </P>
+		<P> We do not tend to expect any substantial work done here because of the overall workload of this project.</P>
+
+		<style>
+			del{text-align: left;}
+		</style>
+		<h2>Schedule</h2>
+		<p>Week 1 : Study and get familiar with shaders, attempt both approaches, determine the physics behind everything.</p>
+		<P>Week 2 : Simulate the iridescent effects for a CD, create a live demo for the milestone checkpoint.</P>
+		<P>Week 3 : Simulate the soap bubble. Make necessary changes to project 3 BRDFs. Attempt different coating and shading options. Play around with the hyper parameters.  Prepare live demo for the final report.</P>
+		<P>Week 4 : Wrap up everything. Extend our approaches to more complicated objects. <del>Study for final </del></P>
+
+		<h2>Resources</h2>
+		<p>https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-8-simulating-diffraction</p>
+		<p>https://www.shadertoy.com/view/llcXWM</p>
+		<p> https://www.youtube.com/watch?v=NCpaaLkmXI8</p>
+		<p>https://www.alanzucconi.com/2017/07/15/cd-rom-shader-1/</p>
+		<p>https://www.alanzucconi.com/2017/07/15/cd-rom-shader-2/</p>
+		<p>https://docs.chaos.com/display/OSLShaders/Thin+Film+Shader</p>
 	</body>
 </html>
