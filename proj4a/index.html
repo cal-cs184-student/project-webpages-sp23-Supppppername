@@ -1,0 +1,402 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<h1>Project 4: Cloth Simulation</h1>
+		<h3>By Alana Li, Jianzhong He</h3>
+		<h2>Overview</h2>
+		<p>This project simulated real-time cloth, modeled with masses and springs. Three types of springs were included, structural, shearing, and bending. Simulation of how the cloth would fall due to gravity was implemented, and computation of cloth self-collision and collisions with other objects were also added. Lastly, shaders for the cloth were implemented.
+		</p>
+
+		<h2>Part 1: Masses and Springs</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/2pins.png" alt="2 Pins" style="width:60%; padding: 0%">
+				<p>Wireframe with 2 Pins (Gravity Included)</p>
+		  </div>
+		</div>
+		<p>Overview: For this part, We have built the point masses and three different springs on the grid. We started by creating
+			a grid of point masses by iterating through the size of area of the cloth. Then we created the springs based on the point masses we
+			got. One problem we encountered in our implementation is when we clicked "bending" springs, the program crashed because an assertion has failed.
+			We realized that we could have not dealt with the edge cases perfectly well. We fixed this by modifying the constraints we used in the spring creation.
+		</p>>
+
+		<p>A square piece of cloth was modeled with masses and structural, shearing, and bending springs.</p>
+		<p>Structural Springs: Between a point mass and the point mass to its left as well as the point mass above</p>
+		<p>Shearing Springs: Between a point mass and the point mass to its diagonal upper left as well as the point mass to its diagonal upper right</p>
+		<p>Bending Springs: Between a point mass and the point mass 2 to the left as well as the point mass two above</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/allconstraints.png" alt="All Constraints" style="width:100%; padding: 0%">
+				<p>All Springs</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/noshearing.png" alt="No Shearing" style="width:100%; padding: 0%">
+				<p>No Shearing</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/onlyshearing.png" alt="Only Shearing" style="width:100%; padding: 0%">
+				<p>Only Shearing</p>
+		  </div>
+		</div>
+
+		<h2>Part 2: Simulation via Numerical Integration</h2>
+		<p>
+			Overview: For this part, we apply forces over the point masses on the cloth. We first calculated the total force applied on each
+			point masses, then we calculated the spring forces base on Hooke's law. Finally, we applied Verlet integration to compute new point mass positions.
+			Fianlly, we apply the constraints to the point masses to make sure the cloth is not intersecting itself.
+		</p>
+
+		<p align="center">Modifications to Gravity (m/s&sup2)</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lessgrav.gif" alt="Less Gravity" style="width:100%; padding: 0%">
+				<p>Less Gravity (-5)</p>
+		  </div>
+			<div class="column">
+		    <img src="Images/normalgrav.gif" alt="Default Gravity" style="width:100%; padding: 0%">
+				<p>Normal Gravity (-9.8)</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/moregrav.gif" alt="More Gravity" style="width:100%; padding: 0%">
+				<p>More Gravity (-15)</p>
+		  </div>
+		</div>
+		<p>With less gravity, the cloth falls slower, with more gravity the cloth falls faster. It also takes longer for the cloth to settle at an equilibrium state with lower gravity than with higher gravity.</p>
+		<br>
+
+		<p align="center">Modifications to Spring Constant (N/m)</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lessks.gif" alt="Less ks" style="width:100%; padding: 0%">
+				<p>Less ks (2500)</p>
+		  </div>
+			<div class="column">
+		    <img src="Images/normalgrav.gif" alt="Default ks" style="width:100%; padding: 0%">
+				<p>Normal ks (5000)</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/moreks.gif" alt="More ks" style="width:100%; padding: 0%">
+				<p>More ks (7500)</p>
+		  </div>
+		</div>
+		<p>With a lower ks value, the cloth is more elastic. There is a much more visible bounce during and after the fall as compared the the higher ks value. The cloth simulated with a high ks value stretches a lot less in comparision.</p>
+		<br>
+
+		<p align="center">Modifications to Density (g/cm&sup2)</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lessdensity.gif" alt="Less Density" style="width:100%; padding: 0%">
+				<p>Less Density (5)</p>
+		  </div>
+			<div class="column">
+		    <img src="Images/normalgrav.gif" alt="Default Density" style="width:100%; padding: 0%">
+				<p>Normal Density (15)</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/moredensity.gif" alt="More Density" style="width:100%; padding: 0%">
+				<p>More Density (25)</p>
+		  </div>
+		</div>
+		<p>Density is involved in the calculation of the mass of the points in the cloth. With a lower density cloth there isn't much movement when the cloth falls, the curve at the top is much less dramatic than with higher density. With higher density the cloth falls with thicker folds.</p>
+		<br>
+
+		<p align="center">Modifications to Damping</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lessdamp.gif" alt="Less Damping" style="width:100%; padding: 0%">
+				<p>Less Damping (0.1%)</p>
+		  </div>
+			<div class="column">
+		    <img src="Images/normalgrav.gif" alt="Default Damping" style="width:100%; padding: 0%">
+				<p>Normal Damping (0.2%)</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/moredamp.gif" alt="More Damping" style="width:100%; padding: 0%">
+				<p>More Damping (1%)</p>
+		  </div>
+		</div>
+		<p>Damping is the variable that controls how much energy is lost. With a lower dampening value, less energy is lost so the cloth stays in motion more after it falls, swinging back and forth. With a higher dampening value the cloth comes to a stop quickly.</p>
+		<br>
+
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/pinned4.png" alt="4 Pin Cloth" style="width:100%; padding: 0%">
+				<p>4 Pin Cloth (Normal Paramenters)</p>
+		  </div>
+			<div class="column">
+		    <img src="Images/pinned4color.png" alt="Shaded 4 Pin Cloth" style="width:100%; padding: 0%">
+				<p>Shaded 4 Pin Cloth (Normal Paramenters)</p>
+		  </div>
+		</div>
+
+	<h2>Part 3: Handling Object Collisions</h2>
+		<p>Overview: In this part, we implemented collision detection and response for the cloth with a sphere and a plane.
+			By calculating the position of pointmasses relative to the primitives, we can move the pointmass to the surface of the primitives and apply friction.
+		</p>
+		</p>
+	<div class="row">
+		<div class="column">
+			<img src="Images/sphere3.png" alt="Sphere Collision (50000ks)" style="width:100%; padding: 0%">
+			<p>Sphere Collision (50000ks)</p>
+		</div>
+		<div class="column">
+			<img src="Images/sphere1.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+			<p>Sphere Collision (5000ks)</p>
+		</div>
+		<div class="column">
+			<img src="Images/sphere2.png" alt="Sphere Collision (500ks)" style="width:100%; padding: 0%">
+			<p>Sphere Collision (500ks)</p>
+		</div>
+	</div>
+	<p>As shown above, with a higher ks value the cloth is less tight around the sphere while lower ks values have the cloth more draped and close-fitted to the sphere. This makes sense because ks effects the stiffness of the cloth. The more stiff the cloth is, the less it is prone to move and drape around the sphere.</p>
+	<div class="row">
+		<div class="column">
+			<img src="Images/plane.png" alt="Cloth on Plane" style="width:60%; padding: 0%">
+			<p>Cloth on Plane</p>
+		</div>
+	</div><h2>Part 4: Handling self-collisions</h2>
+<p>Overview: In this part, we implemented the self-collision of the cloth. We used spatial hashing to find the 3D position of the
+	point mass and map it to a unique floating number. After that we determine if each pair of point masses are too close to each other to collide. If so, we apply a correction vector to adjust their positions.
+	Finally, update the simulation to reflect the changes we made.
+</p>
+		<p> One problem we encourtered was after we changed the density to 500, the interation between the cloth and the plane
+			was diminished. Some part of the cloth went straight through the plane and disappeared. We tried to fix this problem by going over
+			Plane::collide, and found a flaw in the condition that checks if the point mass is above the plane.
+		</p>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/just_begin.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Cloth just beginning falling</p>
+			</div>
+			<div class="column">
+				<img src="Images/in_the_middle.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Cloth falling in the middle</p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/the_end.png" alt="Sphere Collision (500ks)" style="width:100%; padding: 0%">
+				<p>Cloth almost finished falling</p>
+			</div>
+		<div class="column">
+			<img src="Images/at_rest.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+			<p>Cloth falling in the middle</p>
+		</div>
+		</div>
+	<p>
+		If we change the density to 500, we can see that there are more wrinkles and the cloth is more compressed.
+		This is because the cloth is denser and the spring force between point masses is stronger.
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/denser_just_falling.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Cloth just beginning falling (density = 500)</p>
+			</div>
+			<div class="column">
+				<img src="Images/denser_the_middle.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Cloth falling in the middle (density = 500) </p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/denser_the_end.png" alt="Sphere Collision (500ks)" style="width:100%; padding: 0%">
+				<p>Cloth almost finished falling (density = 500) </p>
+			</div>
+			<div class="column">
+				<img src="Images/denser_at_rest.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Cloth falling in the middle (density = 500) </p>
+			</div>
+		</div>
+	<p>
+		If we change to the ks to 30000, we can see that the cloth is stiffer, so there are less wrinkles. The cloth
+		tends to fold less compared to the previous case.
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/ks_just_begin.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Cloth just beginning falling (ks = 30000)</p>
+			</div>
+			<div class="column">
+				<img src="Images/ksin_the_middle.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Cloth falling in the middle  (ks = 30000) </p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/ks_in_the_end.png" alt="Sphere Collision (500ks)" style="width:100%; padding: 0%">
+				<p>Cloth almost finished falling  (ks = 30000) </p>
+			</div>
+			<div class="column">
+				<img src="Images/ks_final_state.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Cloth falling in the middle (ks = 30000) </p>
+			</div>
+		</div>
+		<h2>Part 5: Shaders</h2>
+	<p>Overview: In this part, we implemented different shaders for the cloth simulation. We first implemented the diffuse shading in, which allows us to see
+		how diffuse objects behave under lights. We then implemented the Phong shading, which adds ambient light component and specular reflection component to the previous
+		part. Next, we implemented the texture shading, which shows the texture of the cloth. Last but not least, we implemented the displacement and bump Mapping, which
+		adds a 3D effect on the texture. Finally, we implemented the environment-mapped reflections, which simulates the reflection of a mirror-like texutre cloth.
+
+	</p>
+
+
+		<h3>
+			Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects
+		</h3>
+
+		<p>
+			Shader is a type of computer program that utilizes the GPU to perform a specific task during the rendering pipelines. Shaders can be written in different programming languages, and has the ability to
+			accelerate the rendering process by unloading work to the GPU. Programmer can use shaders to create different effects on the rendered objects, such as lighting, texture, and reflection.
+		</p>
+		<p>
+			In this part, we implemented 2 shaders, the vertex shader and the fragment shader. The vertex shader computes the vertex of the primitives that is being rendered,e.g. positions, normals, textures, in/uv vectors, and then output the result to the fragment shader.
+
+			The fragment shader then complete the final stage of rasterization process, which determines final color of the fragment/pixel base on the input from the vertex shader.
+	</p>
+
+	<h3>Blinn-Phong shading model
+	</h3>
+	<p>Blinn-phong shading model is a real-life improvement compared to diffuse shader. It adds ambient light component and specular reflection component to the previous part.
+		The ambient light component is the light that is reflected from all directions, independent to the surface normal.
+		The specular reflection component is the light that is reflected from the surface in a specific direction, dependent to the surface normal. The final irradiance is obtained by summing all
+		three components together.
+	</p>
+
+		<p> The coefficient we used: ka*Ia = 0.2, kd = 1, ks = 0.7, p = 64
+		</p>
+	<p> Here are some screenshots:
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/ambient_only.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>ambient only</p>
+			</div>
+			<div class="column">
+				<img src="Images/diffuse_only.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>diffuse only </p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/Phong_only.png" alt="Sphere Collision (500ks)" style="width:100%; padding: 0%">
+				<p>specular only </p>
+			</div>
+			<div class="column">
+				<img src="Images/combined.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>entire Blinn-Phong </p>
+			</div>
+		</div>
+
+		<h3>Texture
+		</h3>
+	<p>
+	The first texture, Campanile, was used in project 1. The second texture is a photo I took last Friday.
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/Campanile.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Campanile</p>
+			</div>
+			<div class="column">
+				<img src="Images/texture_1.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Students on grass</p>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="column">
+				<img src="Images/tower.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>Campanile</p>
+			</div>
+			<div class="column">
+				<img src="Images/grass.png" alt="Sphere Collision (5000ks)" style="width:100%; padding: 0%">
+				<p>Students on grass</p>
+			</div>
+		</div>
+	<h3>Displacement and Bump Mapping
+	</h3>
+<p> In this part, we first modified the bump shader to create a new normal so that it gives a 3D effect on the texture.
+	Then we modified the displacement shader to let the vertex shader to adjust the vertex position based on the new normal. This way we can have a more
+	realistic effect. One problem we encountered here, is when we copied our code from phong.frag, we did not modify the normal to the new normal which we calculated above.
+	After fixing it, we got the following result:
+</p>
+	<p> Bump mapping
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/bump_start.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>bump mapping start (texture 4)</p>
+			</div>
+			<div class="column">
+				<img src="Images/bump_end.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>bump mapping end (texture 4)</p>
+			</div>
+		</div>
+		<p> displacment mapping
+		</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/displacement_start.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>displacement mapping start (texture 4)</p>
+			</div>
+			<div class="column">
+				<img src="Images/displacement_end.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>displacement mapping end (texture 4)</p>
+			</div>
+		</div>
+	<p>  The bump mapping shader gives an illusion of bumping, though the sphere is still a perfect shape.
+		The displacement mapping shader gives the sphere a bumpy surfaces, and the sphere is no longer a perfect shape. In general, the displacement mapping shader is more realistic than the bump mapping shader.
+	</p>
+	<p> We changed the coarseness and thr result is shown below:
+	</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/bump_low.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>bump mapping (texture 4) o -16 a -16</p>
+			</div>
+			<div class="column">
+				<img src="Images/bump_high.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>bump mapping (texture 4) o -128 a -128</p>
+			</div>
+		</div>
+		<p> displacment mapping
+		</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/displacment_low.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>displacement mapping (texture 4) o -16 a -16</p>
+			</div>
+			<div class="column">
+				<img src="Images/displacement_high.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>displacement mapping(texture 4) o -128 a -128</p>
+			</div>
+		</div>
+	<p> Our observation is that, change of coarsenss has a more significant effect on the displacement shader than the bump shader, because a change to
+		the sphere's resolution will heavily affect number of vertices being rendered. Higher resolution, more vertices rendered, more siginificant effects.
+
+	</p>
+	<p> Where the bumpy shader will not change the shape of the sphere, thus the change is not as obvious.
+	</p>
+
+	<h3> Mirror
+	</h3>
+
+		<div class="row">
+			<div class="column">
+				<img src="Images/mirror_start.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>start</p>
+			</div>
+			<div class="column">
+				<img src="Images/mirror_end.png" alt="Cloth just beginning joining" style="width:100%; padding: 0%">
+				<p>end</p>
+			</div>
+		</div>
+	</body>
+</html>
